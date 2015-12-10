@@ -2,5 +2,10 @@
 !/.gitignore.d
 !/.gitignore.d/vim
 !/.vim
+!/.vim/
 !/.vim/*
+!/.vim/*/*
+!/.vim/*/*/*
 !/.vimrc
+/.vim/.netrw*
+*.sw[nop]

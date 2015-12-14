@@ -12,4 +12,6 @@ set background=dark
 set t_Co=16
 colorscheme solarized
 
+set wildmenu
 set laststatus=2 " Always display the status line.
+

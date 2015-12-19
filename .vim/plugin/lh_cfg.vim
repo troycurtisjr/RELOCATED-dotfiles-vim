@@ -9,3 +9,6 @@ map <C-G>      <Plug>MarkersJumpF
 "nmap <C-<>      <Plug>MarkersMark
 "xmap <C-<>      <Plug>MarkersMark
 
+" Set this if you don't want if/else... and such snippets to be expanded for
+" you
+"let g:lh_cpp_snippets=0

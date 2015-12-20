@@ -6,8 +6,8 @@ map <C-G>      <Plug>MarkersJumpF
 "imap <C-M>     <Plug>MarkersJumpB
 "map <C-M>      <Plug>MarkersJumpB
 "imap <C-<>      <Plug>MarkersMark
-"nmap <C-<>      <Plug>MarkersMark
-"xmap <C-<>      <Plug>MarkersMark
+nmap <C-E>      <Plug>MarkersMark
+map <C-E>      <Plug>MarkersMark
 
 " Set this if you don't want if/else... and such snippets to be expanded for
 " you

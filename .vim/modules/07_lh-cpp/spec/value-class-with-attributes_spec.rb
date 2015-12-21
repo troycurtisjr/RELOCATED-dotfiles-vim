@@ -19,7 +19,7 @@ RSpec.describe "C++ Value class w/ attributes wizard", :cpp, :class, :value, :wi
 
   specify "value-attribute-class copyable", :cpp98, :cpp11, :copyable do
     expect(vim.echo('lh#mut#dirs#get_templates_for("cpp/value-class")')).to match(/value-class.template/)
-    expect(vim.command('call lh#mut#expand_and_jump(0, "cpp/internals/class-skeleton", {"attributes": [{"name": "foo", "type": "int"}, {"name": "bar", "type": "std::string", "includes":"<string>", "functions": ["set", "get"]}]})')).to match(/^$|#include <string> added/)
+    expect(vim.command('call lh#mut#expand_and_jump(0, "cpp/value-class", {"attributes": [{"name": "foo", "type": "int"}, {"name": "bar", "type": "string", "functions": ["set", "get"]}]})')).to match(/^$|#include <string> added/)
     vim.feedkeys('\<c-\>\<c-n>:silent! $call append("$", ["",""])\<cr>G')
     assert_buffer_contents <<-EOF
     #include <string>
@@ -27,6 +27,12 @@ RSpec.describe "C++ Value class w/ attributes wizard", :cpp, :class, :value, :wi
     {
     public:
 
+        /**
+         * Init constructor.
+         * @param[in] foo «foo-explanations»
+         * @param[in] bar «bar-explanations»
+         * «@throw »
+         */
         «Test»(int foo, std::string const& bar)
             : m_foo(foo)
             , m_bar(bar)
@@ -50,7 +56,7 @@ RSpec.describe "C++ Value class w/ attributes wizard", :cpp, :class, :value, :wi
     expect(vim.echo('lh#mut#dirs#get_templates_for("cpp/value-class")')).to match(/value-class.template/)
     vim.command('let g:cpp_std_flavour=11')
     vim.command("let g:cpp_explicit_default = 1")
-    expect(vim.command('call lh#mut#expand_and_jump(0, "cpp/internals/class-skeleton", {"attributes": [{"name": "foo", "type": "int"}, {"name": "bar", "type": "std::string", "includes":"<string>", "functions": ["set", "get"]}]})')).to match(/^$|#include <string> added/)
+    expect(vim.command('call lh#mut#expand_and_jump(0, "cpp/value-class", {"attributes": [{"name": "foo", "type": "int"}, {"name": "bar", "type": "string", "functions": ["set", "get"]}]})')).to match(/^$|#include <string> added/)
     vim.feedkeys('\<c-\>\<c-n>:silent! $call append("$", ["",""])\<cr>G')
     assert_buffer_contents <<-EOF
     #include <string>
@@ -66,6 +72,12 @@ RSpec.describe "C++ Value class w/ attributes wizard", :cpp, :class, :value, :wi
          * @warning this class is not meant to be publicly inherited
          */
         ~«Test»() = default;
+        /**
+         * Init constructor.
+         * @param[in] foo «foo-explanations»
+         * @param[in] bar «bar-explanations»
+         * «@throw »
+         */
         «Test»(int foo, std::string const& bar)
             : m_foo(foo)
             , m_bar(bar)
@@ -91,7 +103,7 @@ RSpec.describe "C++ Value class w/ attributes wizard", :cpp, :class, :value, :wi
 
   specify "value-attribute-class copyable, with ptr attributes", :cpp98, :cpp11, :copyable do
     expect(vim.echo('lh#mut#dirs#get_templates_for("cpp/value-class")')).to match(/value-class.template/)
-    expect(vim.command('call lh#mut#expand_and_jump(0, "cpp/internals/class-skeleton", {"use_copy_and_swap": 0, "attributes": [{"name": "foo", "type": "int"}, {"name": "bar", "type": "std::auto_ptr<std::string>", "includes":["<memory>", "<string>"], "functions": ["ref_set", "set", "get"]}]})')).to match(/^$|#include <string> added/)
+    expect(vim.command('call lh#mut#expand_and_jump(0, "cpp/value-class", {"use_copy_and_swap": 0, "attributes": [{"name": "foo", "type": "int"}, {"name": "bar", "type": "std::auto_ptr<std::string>", "includes":["<memory>", "<string>"], "functions": ["ref_set", "set", "get"]}]})')).to match(/^$|#include <string> added/)
     vim.feedkeys('\<c-\>\<c-n>:silent! $call append("$", ["",""])\<cr>G')
     # T* will require a destructor in current class
     # auto_ptr<> will require a destructor in current class, even empty
@@ -105,7 +117,7 @@ RSpec.describe "C++ Value class w/ attributes wizard", :cpp, :class, :value, :wi
     # Regarding setters:
     # 1- one that takes a pointer that'll change the current one
     # 2- one that takes a value to assign in the pointer (if we're in a value
-    # class, sommehow this means that the value behind the pointer could be
+    # class, somehow this means that the value behind the pointer could be
     # duplicated)
     assert_buffer_contents <<-EOF
     #include <memory>
@@ -132,6 +144,13 @@ RSpec.describe "C++ Value class w/ attributes wizard", :cpp, :class, :value, :wi
          * @warning this class is not meant to be publicly inherited
          */
         ~«Test»();
+        /**
+         * Init constructor.
+         * @param[in] foo «foo-explanations»
+         * @param«[in]» bar «bar-explanations»
+         * «@throw »
+         * @pre `bar != NULL`«»
+         */
         «Test»(int foo, std::auto_ptr<std::string> bar)
             : m_foo(foo)
             , m_bar(bar)
@@ -158,7 +177,7 @@ RSpec.describe "C++ Value class w/ attributes wizard", :cpp, :class, :value, :wi
     expect(vim.echo('lh#mut#dirs#get_templates_for("cpp/value-class")')).to match(/value-class.template/)
     vim.command('let g:cpp_std_flavour=11')
     vim.command("let g:cpp_explicit_default = 1")
-    expect(vim.command('call lh#mut#expand_and_jump(0, "cpp/internals/class-skeleton", {"attributes": [{"name": "foo", "type": "int"}, {"name": "bar", "type": "std::string", "includes":"<string>", "functions": ["set", "get"]}]})')).to match(/^$|#include <string> added/)
+    expect(vim.command('call lh#mut#expand_and_jump(0, "cpp/internals/class-skeleton", {"attributes": [{"name": "foo", "type": "int"}, {"name": "bar", "type": "string", "functions": ["set", "get"]}]})')).to match(/^$|#include <string> added/)
     vim.feedkeys('\<c-\>\<c-n>:silent! $call append("$", ["",""])\<cr>G')
     assert_buffer_contents <<-EOF
     #include <string>
@@ -174,6 +193,12 @@ RSpec.describe "C++ Value class w/ attributes wizard", :cpp, :class, :value, :wi
          * @warning this class is not meant to be publicly inherited
          */
         ~«Test»() = default;
+        /**
+         * Init constructor.
+         * @param[in] foo «foo-explanations»
+         * @param[in] bar «bar-explanations»
+         * «@throw »
+         */
         «Test»(int foo, std::string const& bar)
             : m_foo(foo)
             , m_bar(bar)

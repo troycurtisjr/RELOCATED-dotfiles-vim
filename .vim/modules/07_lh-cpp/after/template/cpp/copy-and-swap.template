@@ -5,8 +5,7 @@ VimL: let s:marker_open  = '<+'
 VimL: let s:marker_close = '+>'
 VimL: let s:reindent     = 1
 VimL: " in case the class name is already known, no need to extract it
-VimL: let s:clsname = empty(s:Args()) ? lh#cpp#AnalysisLib_Class#CurrentScope(line("."), "class") : (s:Args()[0])
-VimL:"
+VimL: call s:Include('get-class-name', 'cpp/internals')
 VimL:"
 VimL: let s:rhs = lh#dev#naming#param("rhs")
 VimL: let s:fn_comments = { }
@@ -16,6 +15,7 @@ VimL: let s:fn_comments.note  = [] " => empty line
 VimL: let s:fn_comments.note += ["based on copy-and-swap idiom, with copy-elision exploited"]
 VimL: let s:fn_comments.note += ["exception-safe"]
 VimL: let s:fn_comments.param = [{"dir": "in", "name": (s:rhs), "text": "source data to be copied." } ]
+VimL: let s:fn_comments.throw = {"optional": 1}
 VimL: call s:Include("function-comment", "cpp/internals",s:fn_comments)
 <+s:clsname+>& operator=(<+s:clsname+> <+s:rhs+>)
 {

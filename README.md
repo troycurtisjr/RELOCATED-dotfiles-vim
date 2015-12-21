@@ -24,6 +24,8 @@ The insertion of pair of brackets-like characters is eased thanks to [lh-bracket
 | **keys**                | Expands into ..                                                     | Surrounds the selection with ... <sup>2</sup> | Surrounds the current ... |
 | `(`                     | `(<cursor>)«»`                                                      | `(<selection>)`                               | word                      |
 | `[`                     | `[<cursor>]«»`                                                      | <sup>1</sup>                                  | <sup>1</sup>              |
+| `[` after a `[`         | `[[<cursor>]]«»`            | n/a                                           | n/a                       |
+| `]` before `]]`         | close all `]]`              | n/a                                           | n/a                       |
 | `<localleader>[`        |                                                                     | `[<selection>]`                               | word                      |
 | `{`                     | `{<cursor>}«»`<sup>3</sup>                                          | `{<selection>}`                               | word                      |
 | `<localleader>{`        |                                                                     | `{\n<selection>\n}«»`                         | line                      |
@@ -152,7 +154,9 @@ snippets as most of them have options.
 ### Syntax highlighting
   * assign in condition (bad practice)
   * catch by value (bad practice)
-  * throw specifications ([do you really know what they are about, and still want them?](http://www.gotw.ca/gotw/082.htm))
+  * throw specifications ([do you really know what they are about, and still want them?](http://www.gotw.ca/gotw/082.htm)), BTW they have been deprecated in C++11
+  * C casts in C++ (bad practice)
+  * cases that fall through the next one (code smell -- disabled by default)
   * function definitions
 
 ### Miscellaneous

@@ -4,10 +4,10 @@
 "		<URL:http://github.com/LucHermitte/mu-template>
 " License:      GPLv3 with exceptions
 "               <URL:http://github.com/LucHermitte/mu-template/License.md>
-" Version:      3.7.0
-let s:k_version = 370
+" Version:      4.0.0
+let s:k_version = 400
 " Created:      05th Jan 2011
-" Last Update:  10th Dec 2015
+" Last Update:  17th Dec 2015
 "------------------------------------------------------------------------
 " Description:
 "       mu-template internal functions
@@ -20,10 +20,21 @@ let s:k_version = 370
 "       Requires Vim7+
 "       See plugin/mu-template.vim
 " History:
+"       v4.0.0
+"       (*) BUG: "MuT:let" does not support variables with digits
+"       (*) ENH: "MuT: debug let" is now supported
+"       (*) ENH: New function s:ParamOrAsk()
+"       (*) BUG: Styling was not applied on expression where /^/ is part of the
+"           matching regex
+"       (*) DPR: s:Arg() is to be replaced with s:CmdLineParams()
+"           Objective: s:args becomes a list of dictionaries
 "       v3.7.0
+"       (*) BUG: Incorrect use of result of s:LoadTemplate()
 "       (*) BUG: Resist to lh-brackets v3.0.0 !jump! deprecation
 "       (*) ENH: New function: s:SurroundableParam()
-"       v3.6.1
+"       (*) ENH: s:Include() can be used from an expression surrounded by
+"           text
+"       v3.6.2
 "       (*) ENH: s:Include() can be used from an expression now
 "       v3.6.1
 "       (*) WIP: Limiting s:PushArgs() to "routines" started
@@ -208,7 +219,7 @@ function! lh#mut#expand(NeedToJoin, ...) abort
 
   " 3- Expand the lines {{{3
   return s:DoExpand(a:NeedToJoin)
-endfunction
+endfunction "}}}3
 
 " Function: lh#mut#expand_text(NeedToJoin, text, ...)      {{{2
 function! lh#mut#expand_text(NeedToJoin, text, ...) abort
@@ -264,7 +275,9 @@ function! lh#mut#expand_and_jump(needToJoin, ...) abort
     call lh#mut#dirs#update()
     let s:args = []
     if a:0 > 1
-      call s:PushArgs(a:000[1:])
+      " When calling from :MuTemplate, the type of the elements will be string
+      let arg = type(a:2) == type('string') ? {'cmdline': a:000[1:]} : a:000[1:]
+      call s:PushArgs(arg)
       " echomsg 'all: ' . string(s:args)
     endif
     let res = (a:0>0)
@@ -419,7 +432,7 @@ function! s:PopArgs()
 endfunction
 
 " Function: s:Args()                 {{{3
-" @returns a list. If the list is empty, this mean no parameter was given.
+" @returns a list. If the list is empty, this means no parameter was given.
 let s:args = []
 function! s:Args()
   " echomsg string(s:args)
@@ -470,6 +483,21 @@ function! s:Param(name, default) abort
   " echomsg string(s:args)
 endfunction
 
+" Function: s:ParamOrAsk(name, ...)  {{{3
+function! s:ParamOrAsk(name, ...)
+  let res = s:Param(a:name, lh#option#unset())
+  if lh#option#is_set(res) | return res | endif
+  return call('INPUT',a:000)
+endfunction
+
+" Function: s:CmdLineParams(...)     {{{3
+function! s:CmdLineParams(...)
+  let args = lh#list#flatten(copy(s:args))
+  " call filter(args, 'has_key(v:val, "cmdline")')
+  let cmdline = lh#list#transform_if(args, [], 'v:val.cmdline', 'type(v:val) == type({}) && has_key(v:val, "cmdline")')
+  return !empty(cmdline) ? cmdline[-1] : a:000
+endfunction
+
 " Function: s:Include()              {{{3
 function! s:Include(template, ...) abort
   let pos = s:content.crt
@@ -490,8 +518,14 @@ function! s:Include(template, ...) abort
   " todo: mark the line where s:Pop should be applied
   " todo: check if pushing while no file found as no pop will get executed
   call s:PushArgs(a:0>1 ? a:000[1:] : [])
-  if 0 == s:LoadTemplate(pos+correction, dir.a:template.'.template')
-    call lh#common#warning_msg("muTemplate: No template file matching <".dir.a:template.'.template'.">\r".'dir='.dir.'|'.a:template.'|'.string(a:000))
+  " There is at least always one line: the PopArgs()
+  if 1 == s:LoadTemplate(pos+correction, dir.a:template.'.template')
+    if correction == 1
+      " only set when called from an expression
+      return a:template
+    else
+      call lh#common#warning_msg("muTemplate: No template file matching <".dir.a:template.'.template'.">\r".'dir='.dir.'|'.a:template.'|'.string(a:000))
+    endif
   endif
   return ""
 endfunction
@@ -686,11 +720,19 @@ function! s:LoadTemplate(pos, templatepath, ...) abort
   let lines += [s:Command( 'call s:PopArgs()')]
   if a:0 > 0
     let map_action = a:1
-    let pat_not_text = '\c\(^'.s:Command('').'\|'.s:Special('').'\)'
+    let pat_not_text = '\v\c(^'.s:Command('').'|'.s:Special('').')'
     call map(lines, "v:val =~ pat_not_text ? (v:val) : ".map_action)
   endif
+  if get(s:, 'reindent') == 'python'
+    let s:content.crt_indent = a:pos > 0
+          \ ? len(matchstr(s:content.lines[a:pos - 1], '\v^\s*'))
+          \ : indent('.')
+    let s:content.crt_indent += &sw * s:Param('indented', 0)
+    let indent = repeat(' ', s:content.crt_indent)
+    call map(lines, 'indent . v:val')
+  endif
   call extend(s:content.lines, lines, a:pos)
-  return len(s:content.lines)
+  return len(lines)
 endfunction
 
 " s:DoExpand(NeedToJoin)                                       {{{3
@@ -753,7 +795,8 @@ function! s:DoExpand(NeedToJoin) abort
     call s:TryActivateStakeholders(pos, last)
 
     " Reindent {{{4
-    if exists('s:reindent') && s:reindent
+    " Other indenting scheme: "python", managed elsewhere
+    if get(s:, 'reindent', 0) == 1
       silent exe get(s:content, 'first_line_indented', pos).','.(last).'normal! =='
       unlet s:reindent
     endif
@@ -776,7 +819,7 @@ function! s:DoExpand(NeedToJoin) abort
       silent! exe (pos).','.(last).'foldopen!'
     endif
   endtry
-endfunction
+endfunction "}}}4
 
 " s:InterpretValue() will interpret a sequence between ¡.\{-}¡ {{{3
 " ... and return the computed value.
@@ -785,12 +828,14 @@ endfunction
 " use.
 function! s:InterpretValue(what) abort
   let what = substitute(a:what, s:Marker('\(.\{-}\)'), lh#marker#txt('\1'), 'g')
+  " Special case: s:Include => need to split the line before and after
+  let nl = what =~ 's:Include' ? '\r' : ''
   " echo "interpret value: " . what
   try
     " todo: can we use eval() now?
     exe 'let s:__r = ' . what
     " NB: cannot use a local variable, hence the "s:xxxx"
-    return s:__r
+    return nl . s:__r . nl
   catch /.*/
     call lh#common#warning_msg("muTemplate: Cannot interpret `".a:what."': ".v:exception)
     return a:what
@@ -903,7 +948,9 @@ function! s:InterpretValuesAndMarkers(line) abort
           " There may be an expression within the marker
           let part = s:InterpretValues(part).line
           try
-            let value = eval(part)
+            let nl = part =~ 's:Include' ? "\n" : ''
+            "BUG in Vim7.3: eval() may not fail but return 0
+            let value = nl. eval(part) .nl
           catch /.*/
             let value = lh#marker#txt(part)
           endtry
@@ -913,10 +960,12 @@ function! s:InterpretValuesAndMarkers(line) abort
       endif
       let sValue = (type(value)!=type("") ? string(value) : value)
       if get(s:content, 'can_apply_style')
-        let sValue = s:ApplyStyling(sValue)
+        " When not on the start of line, styling that expect /^/ don't know it
+        " => combine style application
+        let res .= s:ApplyStyling(split[1] . sValue)
+      else
+        let res .= s:ApplyStyling(split[1]) . sValue
       endif
-      " echo "res .= ".s:ApplyStyling(split[1]). '   +   ' .sValue
-      let res .= s:ApplyStyling(split[1]) . sValue
       let tail = split[4]
       let may_merge = 1
     endif
@@ -927,7 +976,7 @@ function! s:InterpretValuesAndMarkers(line) abort
 endfunction
 
 " s:InterpretMarkers(line) ~ eval markers as expr in {line}    {{{3
-" todo merge with s:InterpretValues
+" deprecated
 function! s:InterpretMarkers(line) abort
   " @pre must not be defining VimL functions
   if !empty(s:__function)
@@ -1004,7 +1053,7 @@ endfunction
 " s:InterpretMuTCommand(the_line)                              {{{3
 function! s:InterpretMuTCommand(the_line) abort
   try
-    let [dummy, special_cmd, cond;tail] = matchlist(a:the_line, s:Special('\s*\(\S\+\)\(\s\+.*\)\='))
+    let [dummy, special_cmd, cond; tail] = matchlist(a:the_line, s:Special('\v\s*(\S+)(\s+.*)='))
     if     special_cmd == 'if' " {{{4
       if s:isBranchActive()
         let is_true = eval(cond)
@@ -1034,7 +1083,7 @@ function! s:InterpretMuTCommand(the_line) abort
         throw "'MuT: else' used, but there was no if"
       endif
       call remove(s:content.scope, 0)
-    elseif special_cmd == 'let' " {{{4
+    elseif special_cmd == 'let' || (special_cmd == 'debug' && cond =~ '\v^\s*let>') " {{{4
       if ! s:isBranchActive()
         return
       endif
@@ -1042,7 +1091,7 @@ function! s:InterpretMuTCommand(the_line) abort
       " later unlet
       " Moreover, "s:" is automatically added
       " Note: doesn't support dict, nor lists
-      let [all, script, varname, op, expr; tail] = matchlist(a:the_line, '\v'.s:Special('\s*\zslet\s*(s:)=([a-zA-Z_]+)\s*([.+*/-]=\=)\s*(.*)'))
+      let [all, debug, script, varname, op, expr; tail] = matchlist(a:the_line, '\v'.s:Special('\s*(debug\s+)=\zslet\s*(s:)=(\w+)\s*([.+*/-]=\=)\s*(.*)'))
       let s:content.variables += [varname]
       if stridx(expr, varname) == -1 && op == '='
         silent! unlet s:{varname}
@@ -1057,7 +1106,7 @@ function! s:InterpretMuTCommand(the_line) abort
       throw "Unsupported 'Mut: ".special_cmd."' MuT-command"
     endif " }}}4"
   catch /.*/
-    throw substitute(v:exception, '^Vim\((.\{-})\)\=:', '', '')." when parsing ".a:the_line." -- ".v:exception.' ('.v:throwpoint.')'
+    throw substitute(v:exception, '^Vim\((.\{-})\)\=:', '', '')." when parsing ".a:the_line." --  (".v:throwpoint.')'
   endtry
 endfunction
 
@@ -1067,9 +1116,9 @@ function! s:InterpretLines(first_line) abort
   let markerCharacters = lh#marker#txt('')
 
   let s:content.crt = 0
-  let pat_command = '\c^'.s:Command('')
-  let pat_special = '\c^'.s:Special('')
-  let command_extract_re = '\c^'.s:Command('\s*').'\zs.*'
+  let pat_command = '\c^\s*'.s:Command('')
+  let pat_special = '\c^\s*'.s:Special('')
+  let command_extract_re = '\c^\s*'.s:Command('\s*').'\zs.*'
   while s:content.crt < len(s:content.lines)
     " echomsg s:content.crt . ' < ' . len(s:content.lines) . ' ----> ' . s:content.lines[s:content.crt]
     let the_line = s:content.lines[s:content.crt]
@@ -1373,6 +1422,7 @@ function! s:ExecutePostExpandCallbacks() abort
     else
       execute 'let nb_lines_added += '.Callback
     endif
+    unlet Callback
   endfor
   return nb_lines_added - len(lines_to_join)
 endfunction

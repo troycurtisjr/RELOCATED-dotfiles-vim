@@ -134,7 +134,7 @@ try
     endif
   endfor
 
-  let args.project_kind = eval('extend('.join(map(kind, '{(v:val): 1}'), ',').')')
+  let args.project_kind = eval(join(map(kind, '{(v:val): 1}'), ','))
 
   return  args
 finally

@@ -53,6 +53,15 @@ let b:loaded_cpp_BuildTemplates_local_settings = 1
 " Parameter:    <1> == Title of the separation
   command! -buffer -nargs=1 BLINE :call <sid>Cpp_bigLine(<q-args>)
   nnoremap <buffer> ;BL :BLINE<space>
+  nnoremap <buffer> ;bl :BLINE<space>
+
+" Command:      :BLINER
+" Map shortcut: ;BR
+" Purpose:      Replace selected lines with a big line separator. 
+" Parameter:    <1> == Title of the separation
+  command! -buffer -nargs=1 -range BLINER :call <sid>Cpp_lineRange(<q-args>, <line1>, <line2>)
+vnoremap <buffer> ;br :BLINER<space>
+"
 "
 " Command:      :MGROUP
 " Map shortcut: ;MGR
@@ -127,6 +136,30 @@ function! s:Cpp_bigLine(title) abort " {{{3
         \ '\(.\{'.pos.'}\).\{'.(lh#encoding#strlen(a:title)+4).'}\(.*\)$',
         \ '\1[ '.a:title.' ]\2', '')
   silent put = s:EqLine
+endfunction
+
+function! s:Cpp_lineRange(title, lineStart, lineEnd) abort " {{{3
+  echo a:lineStart . "," . a:lineEnd
+  let totalNum = a:lineEnd - a:lineStart + 1
+
+  let lines = []
+
+  let l = 0
+  while l < totalNum
+    call add(lines, s:EqLine)
+    let l = l + 1
+  endwhile
+
+  let titleIndex = (totalNum)/2
+
+
+  let pos = (79-lh#encoding#strlen(a:title)-4)/2
+  let lines[titleIndex] = substitute(s:EqLine,
+        \ '\(.\{'.pos.'}\).\{'.(lh#encoding#strlen(a:title)+4).'}\(.*\)$',
+        \ '\1[ '.a:title.' ]\2', '')
+
+  call setline(a:lineStart, lines)
+
 endfunction
 
 function! s:Cpp_littleLine(title) abort " {{{3

@@ -1,0 +1,5 @@
+VimL:" Tweaked Default File header - C/C++ Definition File-Template, Luc Hermitte
+/**
+ * @file	¡fnamemodify(s:filename,":t")¡
+ * @brief ¡lh#marker#txt("Brief Description")¡
+ */

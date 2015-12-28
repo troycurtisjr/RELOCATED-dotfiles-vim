@@ -4,8 +4,14 @@
 !/.vim
 !/.vim/
 !/.vim/*
+!/.vim/*/
 !/.vim/*/*
+!/.vim/*/*/
 !/.vim/*/*/*
+!/.vim/**
 !/.vimrc
 /.vim/.netrw*
 *.sw[nop]
+*.so
+*.o
+tags

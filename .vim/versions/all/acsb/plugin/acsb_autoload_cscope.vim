@@ -4,10 +4,10 @@
 " Revision: 0.3
 " Modified: Gabor Fekete for acsb.vim
 
-if exists("acsb_loaded_autoload_cscope")
+if exists("g:acsb_loaded_autoload_cscope")
 	finish
 endif
-let loaded_acsb_autoload_cscope = 1
+let g:acsb_loaded_autoload_cscope = 1
 
 let s:cscope_prefix_0 = ""
 let s:cscope_prefix_1 = "cscope-data/"
@@ -182,17 +182,19 @@ function s:Cycle_csdb()
       call ACSB_setupdb()
     else " No cscope database, undo things. (someone rm-ed it or somesuch)
       call s:Unload_csdb()
-"      echo "Fuck! No cscope.out was found!"
+"      echo "No cscope.out was found!"
     endif
 endfunc
 
 " auto toggle the menu
 augroup acsb_autoload_cscope
  au!
- au BufEnter *.[chly]  call <SID>Cycle_csdb() | call <SID>Cycle_macros_menus()
- au BufEnter *.cc      call <SID>Cycle_csdb() | call <SID>Cycle_macros_menus()
- au BufUnload *.[chly] call <SID>Unload_csdb() | call <SID>Cycle_macros_menus()
- au BufUnload *.cc     call <SID>Unload_csdb() | call <SID>Cycle_macros_menus()
+ au     BufEnter  *.[chly] call <SID>Cycle_csdb()  | call <SID>Cycle_macros_menus()
+ au     BufEnter  *.cc     call <SID>Cycle_csdb()  | call <SID>Cycle_macros_menus()
+ au     BufEnter  *.[ch]pp call <SID>Cycle_csdb()  | call <SID>Cycle_macros_menus()
+ au     BufUnload *.[chly] call <SID>Unload_csdb() | call <SID>Cycle_macros_menus()
+ au     BufUnload *.cc     call <SID>Unload_csdb() | call <SID>Cycle_macros_menus()
+ au     BufUnload *.[ch]pp call <SID>Unload_csdb() | call <SID>Cycle_macros_menus()
 augroup END
 
 let &cpo = s:save_cpo

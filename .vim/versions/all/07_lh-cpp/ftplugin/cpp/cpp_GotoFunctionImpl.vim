@@ -212,6 +212,12 @@ let b:loaded_ftplug_cpp_GotoFunctionImpl = 200
 let s:cpo_save=&cpo
 set cpo&vim
 
+let s:prefix = ";"
+
+if exists('g:lh_cpp_templates_leader')
+  let s:prefix = g:lh_cpp_templates_leader
+endif
+
 " ==========================================================================
 
 " Commands: {{{2
@@ -241,16 +247,16 @@ nnoremap <buffer> <Plug>PasteImpl	:PASTEIMPL<CR>
 nnoremap <buffer> <Plug>MoveToImpl	:MOVETOIMPL<CR>
 
 if !hasmapto('<Plug>GotoImpl', 'n')
-  nmap <buffer> ;GI <Plug>GotoImpl
+  execute 'nmap <buffer> ' . s:prefix . 'GI <Plug>GotoImpl'
   " <LeftMouse> is used to position the cursor first
   nmap <buffer> <M-LeftMouse>  <LeftMouse><Plug>GotoImpl<CR>
 endif
 if !hasmapto('<Plug>PasteImpl', 'n')
-  nmap <buffer> ;PI <Plug>PasteImpl
+  execute 'nmap <buffer> ' . s:prefix . 'PI <Plug>PasteImpl'
   nmap <buffer> <M-RightMouse> <LeftMouse><Plug>PasteImpl
 endif
 if !hasmapto('<Plug>MoveToImpl', 'n')
-  nmap <buffer> ;MI <Plug>MoveToImpl
+  execute 'nmap <buffer> ' . s:prefix . 'MI <Plug>MoveToImpl'
   " <LeftMouse> is used to position the cursor first
   " nmap <buffer> <M-LeftMouse>  <LeftMouse><Plug>MoveToImpl<CR>
 endif

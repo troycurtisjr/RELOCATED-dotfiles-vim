@@ -28,6 +28,12 @@ let b:loaded_cpp_BuildTemplates_local_settings = 1
   let s:cpo_save = &cpo
   set cpo&vim
 
+  let s:prefix = ";"
+
+  if exists('g:lh_cpp_templates_leader')
+    let s:prefix = g:lh_cpp_templates_leader
+  endif
+
 " ------------------------------------------------------------------------
 " Commands {{{2
 " ------------------------------------------------------------------------
@@ -38,29 +44,30 @@ let b:loaded_cpp_BuildTemplates_local_settings = 1
 " Note:         Use the same function than :CLASS for inserting the class
 "               template.
   command! -buffer -nargs=1 HEADER :call <sid>Cpp_newHeaderFile(<q-args>)
-  nnoremap <buffer> ;HE :HEADER<space>
+  execute 'nnoremap <buffer> ' . s:prefix . "HE :HEADER<space>"
 "
 " Command:      :CLASS
 " Map shortcut: ;CL
 " Purpose:      Insert the template for a class
 " Parameter:    <1> == Name of the class
   command! -buffer -nargs=1 CLASS :call <sid>Cpp_newClass(<q-args>)
-  nnoremap <buffer> ;CL :CLASS<space>
+  execute 'nnoremap <buffer> ' . s:prefix . 'CL :CLASS<space>'
 "
 " Command:      :BLINE
 " Map shortcut: ;BL
 " Purpose:      Insert a 3 lines separator
 " Parameter:    <1> == Title of the separation
   command! -buffer -nargs=1 BLINE :call <sid>Cpp_bigLine(<q-args>)
-  nnoremap <buffer> ;BL :BLINE<space>
-  nnoremap <buffer> ;bl :BLINE<space>
+  execute 'nnoremap <buffer> ' . s:prefix . 'BL :BLINE<space>'
+  execute 'nnoremap <buffer> ' . s:prefix . 'bl :BLINE<space>'
 
 " Command:      :BLINER
 " Map shortcut: ;BR
 " Purpose:      Replace selected lines with a big line separator. 
 " Parameter:    <1> == Title of the separation
   command! -buffer -nargs=1 -range BLINER :call <sid>Cpp_lineRange(<q-args>, <line1>, <line2>)
-vnoremap <buffer> ;br :BLINER<space>
+  execute 'vnoremap <buffer> ' . s:prefix . 'BR :BLINER<space>'
+  execute 'vnoremap <buffer> ' . s:prefix . 'br :BLINER<space>'
 "
 "
 " Command:      :MGROUP
@@ -68,26 +75,25 @@ vnoremap <buffer> ;br :BLINER<space>
 " Purpose:      Insert a group plus a separator line
 " Parameter:    <1> == Name of the group
   command! -buffer -nargs=1 MGROUP :call <sid>Cpp_megagroup(<q-args>)
-  nnoremap <buffer> ;MGR :MGROUP<space>
+  execute 'nnoremap <buffer> ' . s:prefix . 'MGR :MGROUP<space>'
 "
 " Command:      :GROUP
 " Map shortcut: ;GR
-" Purpose:      Insert a group
-" Parameter:    <1> == Name of the group
+" Purpose:      Insert a group " Parameter:    <1> == Name of the group
   command! -buffer -nargs=1 GROUP :call <sid>Cpp_group(<q-args>)
-  nnoremap <buffer> ;GR :GROUP<space>
+  execute 'nnoremap <buffer> ' . s:prefix . 'GR :GROUP<space>'
 "
 " Command:      :ADDATTRIBUTE
 " Map shortcut: ;AA
 " Purpose:      Insert an attribute plus its accessors to the current class
   command! -buffer -nargs=0 ADDATTRIBUTE :call Cpp_AddAttribute()
-  nnoremap <buffer> ;AA :ADDATTRIBUTE<cr>
+  execute 'nnoremap <buffer> ' . s:prefix . 'AA :ADDATTRIBUTE<cr>'
 "
 " Command:      :REACHINLINE
 " Map shortcut: ;RI
 " Purpose:      Reach the location of inlines for the specified class
   command! -buffer -nargs=1 REACHINLINE :call Cpp_ReachInlinePart(<q-args>)
-  nnoremap <buffer> ;RI :REACHINLINE<space>
+  execute 'nnoremap <buffer> ' . s:prefix . 'RI :REACHINLINE<space>'
 " ==========================================================================
 " Mappings {{{2
 " ;GR <foo>  inserts /**@name <foo>

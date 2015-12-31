@@ -14,7 +14,8 @@ VimL:   let s:version = empty(s:version_lines) ? lh#marker#txt('001') : matchstr
 MuT:  else
 VimL:   let s:version = lh#marker#txt('001')
 MuT:  endif
-" Version:      <+substitute(substitute(s:version, "'", '', 'g'), '\d', '&.', 'g')+>
+VimL: " I do not actually want this version in the header.
+VimL: " Version:      <+substitute(substitute(s:version, "'", '', 'g'), '\d', '&.', 'g')+>
 let s:k_version = <+s:version+>
 " Created:      <+lh#time#date()+>
 "------------------------------------------------------------------------

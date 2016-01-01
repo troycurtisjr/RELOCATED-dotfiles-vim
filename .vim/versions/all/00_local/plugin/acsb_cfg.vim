@@ -25,6 +25,7 @@ set cpo&vim
 " Commands and Mappings {{{1
 " Do not load the acsb autoload file.
 let g:acsb_loaded_autoload_cscope = 1
+let g:acsb_nomaps = 1
 
 " Create custom mappings, inspired by acs_autoload_cscope, but
 " using acsb instead of the painful built-in version.
@@ -36,6 +37,13 @@ noremap <C-\>t :ACSBfindsym txt <c-r>=expand("<cword>")<cr><cr>
 noremap <C-\>e :ACSBfindsym grep <c-r>=expand("<cword>")<cr><cr>
 noremap <C-\>f :ACSBfindsym file <c-r>=expand("<cword>")<cr><cr>
 noremap <C-\>i :ACSBfindsym inc <c-r>=expand("<cword>")<cr><cr>
+
+noremap <C-T><C-T> :call ACSB#stack_jump(-1)<cr>
+
+noremap <silent> <C-Q> :ACSBStacks<cr>
+
+noremap <silent> <C-P> :ACSBQueries<cr>
+"inoremap <silent> <C-P> <ESC>:ACSBQueries<cr>
 
 augroup acsb_custom_autoload_cscope
   au!

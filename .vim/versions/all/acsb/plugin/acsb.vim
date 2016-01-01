@@ -30,6 +30,10 @@ let loaded_acsb = 1
 let g:acsb_cscope_dir = ""
 
 command! -nargs=* ACSBfindsym call ACSB#find_symbol(<f-args>)
+
+command! -nargs=* ACSBVSplitfindsym vsplit | call ACSB#find_symbol(<f-args>)
+command! -nargs=* ACSBSplitfindsym  split | call ACSB#find_symbol(<f-args>)
+
 if !exists(":ACSBQueries")
   command ACSBQueries keepjumps :call ACSB#showBuff(0, 0)
 endif

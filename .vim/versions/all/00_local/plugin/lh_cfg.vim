@@ -1,6 +1,10 @@
 
 ":let g:usemarks=0
 
+" Centering the newly jumped to marker *sounds* like a good idea, but in
+" practice it is really disorienting.
+let g:marker_center=0
+
 imap <C-G>     <Plug>MarkersJumpF
 map <C-G>      <Plug>MarkersJumpF
 "imap <C-M>     <Plug>MarkersJumpB

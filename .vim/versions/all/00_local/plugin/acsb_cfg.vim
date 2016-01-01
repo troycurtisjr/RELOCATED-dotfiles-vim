@@ -38,6 +38,15 @@ noremap <C-\>e :ACSBfindsym grep <c-r>=expand("<cword>")<cr><cr>
 noremap <C-\>f :ACSBfindsym file <c-r>=expand("<cword>")<cr><cr>
 noremap <C-\>i :ACSBfindsym inc <c-r>=expand("<cword>")<cr><cr>
 
+noremap <C-\><C-\>s :ACSBVSplitfindsym ref <c-r>=expand("<cword>")<cr><cr>
+noremap <C-\><C-\>g :ACSBVSplitfindsym def <c-r>=expand("<cword>")<cr><cr>
+noremap <C-\><C-\>d :ACSBVSplitfindsym called <c-r>=expand("<cword>")<cr><cr>
+noremap <C-\><C-\>c :ACSBVSplitfindsym caller <c-r>=expand("<cword>")<cr><cr>
+noremap <C-\><C-\>t :ACSBVSplitfindsym txt <c-r>=expand("<cword>")<cr><cr>
+noremap <C-\><C-\>e :ACSBVSplitfindsym grep <c-r>=expand("<cword>")<cr><cr>
+noremap <C-\><C-\>f :ACSBVSplitfindsym file <c-r>=expand("<cword>")<cr><cr>
+noremap <C-\><C-\>i :ACSBVSplitfindsym inc <c-r>=expand("<cword>")<cr><cr>
+
 noremap <C-T><C-T> :call ACSB#stack_jump(-1)<cr>
 
 noremap <silent> <C-Q> :ACSBStacks<cr>

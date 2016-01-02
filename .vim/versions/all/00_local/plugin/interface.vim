@@ -14,6 +14,10 @@ set background=dark
 set t_Co=16
 colorscheme solarized
 
+" Keep a minimum number of lines visible around the edges.
+set scrolloff=3
+set sidescrolloff=3
+
 set showcmd " Display my commands as I type
 set wildmenu
 set laststatus=2 " Always display the status line.

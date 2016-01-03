@@ -1,0 +1,12 @@
+VimL:" header File Template, troy, Sun 03 Jan 2016 04:39:23 PM CST
+VimL:" hint: header-hint
+VimL: let s:value_start = '¡'
+VimL: let s:value_end   = s:value_start
+VimL: let s:marker_open  = '<+'
+VimL: let s:marker_close = '+>'
+######################################################################
+# Created By:  ¡substitute(Author(0),'\r"','\r *','g')¡ 
+# Created:	   ¡DateStamp()¡
+# Description: <+Description+>
+######################################################################
+

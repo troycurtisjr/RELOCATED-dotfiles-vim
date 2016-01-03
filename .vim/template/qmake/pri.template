@@ -1,0 +1,23 @@
+VimL:" pri File Template, troy, Sun 03 Jan 2016 05:06:46 PM CST
+VimL:" hint: pri-hint
+VimL: let s:value_start = '¡'
+VimL: let s:value_end   = s:value_start
+VimL: let s:marker_open  = '<+'
+VimL: let s:marker_close = '+>'
+VimL: let s:parent_dir = fnamemodify(s:filename, ":h:t")
+VimL: let s:basename   = fnamemodify(s:filename, ":t:r")
+VimL: let s:inclusion_name = s:parent_dir."/".s:basename
+VimL: let s:inclusion_name = substitute(s:inclusion_name, '[^a-zA-Z0-9]\+', '_', 'g')
+VimL: if !exists('g:qmake_include_guard_var') | let g:qmake_include_guard_var = "PRI_INCLUDE_GUARD" | endif
+
+!contains(¡g:qmake_include_guard_var¡, ¡s:inclusion_name¡) {
+  ¡g:qmake_include_guard_var¡ += ¡s:inclusion_name¡
+
+  # CONFIG += 
+  # QT     +=
+
+  DEPENDPATH  += .
+  INCLUDEPATH += .
+
+  SOURCES += <+test.c+>
+}

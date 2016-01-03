@@ -1,0 +1,59 @@
+VimL:" generic_makefile File Template, troy, Sun 03 Jan 2016 01:09:23 PM CST
+VimL:" hint: generic_makefile-hint
+VimL: let s:value_start = '¡'
+VimL: let s:value_end   = s:value_start
+VimL: let s:marker_open  = '<+'
+VimL: let s:marker_close = '+>'
+###############################################################################
+#                                General Setup
+###############################################################################
+
+#
+# Execute 'make VERBOSE=1 <target>' to display rules as they run.
+#
+ifneq (${VERBOSE}, 1)
+.SILENT:
+endif
+
+###############################################################################
+#                                  Variables 
+###############################################################################
+COMPFLAGS=-Wall ${CFLAGS}
+
+LINKFLAGS=${LDFLAGS}
+
+SOURCES = <+src.c+>    \
+          <+src2.c+>   
+
+OBJECTS = ${SOURCES:.c=.o}
+
+TARGETS = <+target1+>
+
+###############################################################################
+#                                    Rules
+###############################################################################
+.PHONY: all clean
+
+all: ${TARGETS}
+
+clean:
+	@echo "*** Cleaning generated files"
+	rm -f ${TARGETS} ${OBJECTS}
+
+# <+ Source file generation to make the example more complete +>
+src.c:
+	@echo "*** Creating $@"
+	echo "int main(void) { return 0; }" > $@
+
+src2.c:
+	@echo "*** Creating $@"
+	echo "void foo() { ; }" > $@
+# <+ End Source file generation +>
+
+.c.o:
+	@echo "*** Compiling $@"
+	${CC} -c -o $@ ${COMPFLAGS} $^
+
+<+target1+>: ${OBJECTS}
+	@echo "*** Linking $@"
+	${CC} -o $@ ${LINKFLAGS} $^

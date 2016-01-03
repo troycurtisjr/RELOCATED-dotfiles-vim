@@ -2,6 +2,12 @@
 map \\ :xa
 inoremap kj <Esc>
 
+" Navigate wrapped lines
+nnoremap j gj
+nnoremap k gk
+vnoremap j gj
+vnoremap k gk
+
 set nowrap
 
 map <C-h> :wincmd h<CR>

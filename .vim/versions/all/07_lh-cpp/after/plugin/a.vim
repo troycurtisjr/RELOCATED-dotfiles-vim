@@ -595,12 +595,12 @@ comm! -nargs=? -bang IHS call AlternateOpenFileUnderCursor("h<bang>", <f-args>)
 comm! -nargs=? -bang IHV call AlternateOpenFileUnderCursor("v<bang>", <f-args>)
 comm! -nargs=? -bang IHT call AlternateOpenFileUnderCursor("t<bang>", <f-args>)
 comm! -nargs=? -bang IHN call AlternateOpenNextFile("<bang>")
-imap <Leader>ih <ESC>:IHS<CR>
-nmap <Leader>ih :IHS<CR>
-imap <Leader>is <ESC>:IHS<CR>:A<CR>
-nmap <Leader>is :IHS<CR>:A<CR>
-imap <Leader>ihn <ESC>:IHN<CR>
-nmap <Leader>ihn :IHN<CR>
+"inoremap <Leader>ih <ESC>:IHS<CR>
+nnoremap <Leader>ih :IHS<CR>
+"inoremap <Leader>is <ESC>:IHS<CR>:A<CR>
+nnoremap <Leader>is :IHS<CR>:A<CR>
+"inoremap <Leader>ihn <ESC>:IHN<CR>
+nnoremap <Leader>ihn :IHN<CR>
 
 "function! <SID>PrintList(theList) 
 "   let n = 1
@@ -672,6 +672,11 @@ comm! -nargs=? -bang AS call AlternateFile("h<bang>", <f-args>)
 comm! -nargs=? -bang AV call AlternateFile("v<bang>", <f-args>)
 comm! -nargs=? -bang AT call AlternateFile("t<bang>", <f-args>)
 comm! -nargs=? -bang AN call NextAlternate("<bang>")
+
+nnoremap <Leader>a :A<CR>
+nnoremap <Leader>as :AS<CR>
+nnoremap <Leader>av :AV<CR>
+nnoremap <Leader>at :AT<CR>
 
 " Function : BufferOrFileExists (PRIVATE)
 " Purpose  : determines if a buffer or a readable file exists

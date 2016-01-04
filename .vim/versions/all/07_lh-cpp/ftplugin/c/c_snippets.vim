@@ -52,14 +52,14 @@ inoreab <buffer> earse      erase
 "
 "-- insert "#define" at start of line
 " iab  <buffer> <m-d>  <C-R>=lh#map#no_context("\<M-d> ",'\<esc\>0i#define')<CR>
-iab  <buffer> #d     <C-R>=lh#map#no_context("#d ",'\<esc\>0i#define')<CR>
+inoreab  <buffer> #d     <C-R>=lh#map#no_context("#d ",'\<esc\>0i#define')<CR>
 "-- insert "#include" at start of line
 " iab  <buffer> <m-i>  <C-R>=lh#map#no_context("\<M-i> ",'\<esc\>0i#include')<CR>
-iab  <buffer> #n    <C-R>=lh#map#no_context("#n ",'\<esc\>0i#include')<CR>
+inoreab  <buffer> #n    <C-R>=lh#map#no_context("#n ",'\<esc\>0i#include')<CR>
 
 "-- insert "#ifdef/endif" at start of line
-iab  <buffer> #i    <C-R>=lh#map#no_context('#i ','\<esc\>0i#ifdef')<CR>
-iab  <buffer> #e    <C-R>=lh#map#no_context("#e ",'\<esc\>0i#endif')<CR>
+inoreab  <buffer> #i    <C-R>=lh#map#no_context('#i ','\<esc\>0i#ifdef')<CR>
+inoreab  <buffer> #e    <C-R>=lh#map#no_context("#e ",'\<esc\>0i#endif')<CR>
 
 "-- surrounds with "#if 0 ... endif"
 :Brackets #if\ 0 #endif -insert=0 -nl -trigger=<localleader>0

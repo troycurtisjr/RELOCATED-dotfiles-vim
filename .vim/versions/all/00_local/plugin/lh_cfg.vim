@@ -18,11 +18,11 @@ let s:k_version = 001
 " practice it is really disorienting.
 let g:marker_center=0
 
-imap <C-G>     <Plug>MarkersJumpF
-map <C-G>      <Plug>MarkersJumpF
+imap <C-F>     <Plug>MarkersJumpF
+map <C-F>      <Plug>MarkersJumpF
 "imap <C-M>     <Plug>MarkersJumpB
 "map <C-M>      <Plug>MarkersJumpB
-map <C-E>      <Plug>MarkersMark<Plug>MarkersJumpF
+map <C-E>      <Plug>MarkersMark
 
 " Set this if you don't want if/else... and such snippets to be expanded for
 " you

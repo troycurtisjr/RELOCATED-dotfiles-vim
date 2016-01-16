@@ -23,7 +23,7 @@ set cpo&vim
 " Avoid global reinclusion }}}1
 "------------------------------------------------------------------------
 " Commands and Mappings {{{1
-let g:SuperTabDefaultCompletionType = "context"
+"let g:SuperTabDefaultCompletionType = "context"
 " Commands and Mappings }}}1
 "------------------------------------------------------------------------
 "------------------------------------------------------------------------

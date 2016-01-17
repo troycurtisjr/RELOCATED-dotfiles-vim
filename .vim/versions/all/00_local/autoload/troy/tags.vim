@@ -46,9 +46,13 @@ function! troy#tags#setup()
   let currentdir = expand('<afile>:p:h')
   let pathpatterns = [ "tags", "cscope/tags" ]
 
-  call s:Verbose("Looking in parents of " . currentdir)
+  let homexpr = troy#path#home_base_regex()
 
-  let fileoptions = lh#path#find_in_parents( currentdir, pathpatterns, "file", $HOME) 
+  call s:Verbose("Looking in parents of " . currentdir . " stopping at " . homexpr)
+
+  let fileoptions = lh#path#find_in_parents( currentdir, pathpatterns, "file",
+        \                                    homexpr)
+                                             
 
   for tagfilepath in fileoptions
         exe 'setlocal tags+='.tagfilepath

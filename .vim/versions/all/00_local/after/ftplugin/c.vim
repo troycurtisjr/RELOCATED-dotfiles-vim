@@ -4,5 +4,5 @@
 set cmdheight=1
 
 " Use a newline before the opening brace.
-:AddStyle { -b \\n{\\n -prio=10 -ft=c
+:AddStyle { -b { -prio=10 -ft=c
 

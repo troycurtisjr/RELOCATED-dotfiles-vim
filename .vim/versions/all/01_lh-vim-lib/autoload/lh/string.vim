@@ -2,8 +2,8 @@
 " File:         autoload/lh/string.vim                            {{{1
 " Author:       Luc Hermitte <EMAIL:luc {dot} hermitte {at} gmail {dot} com>
 "		<URL:http://github.com/LucHermitte/lh-vim-lib>
-" Version:      3.4.0.
-let s:k_version = '3400'
+" Version:      3.4.1.
+let s:k_version = '3401'
 " Created:      08th Dec 2015
 " Last Update:  15th Dec 2015
 "------------------------------------------------------------------------
@@ -64,6 +64,20 @@ function! lh#string#matches(string, pattern) abort
   let res = []
   call substitute(a:string, a:pattern, '\=add(res, submatch(0))', 'g')
   return res
+endfunction
+
+" # Compatibility {{{2
+" Function: lh#string#strwidth(string) {{{3
+" Get the display width of the string.
+" @version 3.4.1
+function! lh#string#strwidth(string)
+  " Use the built-in if it exists.
+  if exists("*strwidth")
+    return strwidth(string)
+  endif
+
+  " Implementation pulled from Greg Sexton's gitv plugin.
+  return len(split(a:string,'\zs'))
 endfunction
 
 "------------------------------------------------------------------------

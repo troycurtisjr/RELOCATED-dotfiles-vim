@@ -46,11 +46,15 @@ endfunction
 " Function: lh#math#abs(val) {{{2
 " Returns the absolute value of the given number. Needed for compatibility
 " with older vim versions.
+if exists('*abs')
 function! lh#math#abs(val)
-  " This could check to see if the abs() built-in exists, however I suspect
-  " the existance check is more expensive than just doing it directly.
+  return abs(a:val)
+endfunction
+else
+function! lh#math#abs(val)
   return a:val >= 0 ? a:val : -a:val
 endfunction
+endif
 " }}}2
 "------------------------------------------------------------------------
 " ## Internal functions {{{1

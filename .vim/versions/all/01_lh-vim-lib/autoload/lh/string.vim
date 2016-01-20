@@ -70,15 +70,17 @@ endfunction
 " Function: lh#string#strwidth(string) {{{3
 " Get the display width of the string.
 " @version 3.4.1
-function! lh#string#strwidth(string)
-  " Use the built-in if it exists.
-  if exists("*strwidth")
+if exists("*strwidth")
+  function! lh#string#strwidth(string)
+    " Use the built-in if it exists.
     return strwidth(string)
-  endif
-
-  " Implementation pulled from Greg Sexton's gitv plugin.
-  return len(split(a:string,'\zs'))
-endfunction
+  endfunction
+else
+  function! lh#string#strwidth(string)
+    " Implementation pulled from Greg Sexton's gitv plugin.
+    return len(split(a:string,'\zs'))
+  endfunction
+endif
 
 "------------------------------------------------------------------------
 " ## Internal functions {{{1

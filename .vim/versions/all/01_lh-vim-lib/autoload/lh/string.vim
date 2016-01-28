@@ -66,22 +66,6 @@ function! lh#string#matches(string, pattern) abort
   return res
 endfunction
 
-" # Compatibility {{{2
-" Function: lh#string#strwidth(string) {{{3
-" Get the display width of the string.
-" @version 3.4.1
-if exists("*strwidth")
-  function! lh#string#strwidth(string)
-    " Use the built-in if it exists.
-    return strwidth(string)
-  endfunction
-else
-  function! lh#string#strwidth(string)
-    " Implementation pulled from Greg Sexton's gitv plugin.
-    return len(split(a:string,'\zs'))
-  endfunction
-endif
-
 "------------------------------------------------------------------------
 " ## Internal functions {{{1
 

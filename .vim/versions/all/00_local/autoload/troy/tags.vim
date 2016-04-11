@@ -44,7 +44,7 @@ endfunction
 " ## Exported functions {{{1
 function! troy#tags#setup()
   let currentdir = expand('<afile>:p:h')
-  let pathpatterns = [ "tags", "cscope/tags" ]
+  let pathpatterns = [ "tags", "cscope/tags", ".tags" ]
 
   let homexpr = troy#path#home_base_regex()
 

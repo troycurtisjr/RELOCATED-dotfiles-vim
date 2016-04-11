@@ -51,6 +51,23 @@ function! troy#path#home_base_regex()
   return homexpr
 
 endfunction
+
+function! troy#path#topgitdir(startdir)
+  let pathpatterns = [ '.git' ]
+
+  "echo "CurrentDir: " . currentdir . " Path Patterns: " . join(pathpatterns,",")
+
+  let fileoptions = lh#path#find_in_parents(a:startdir, pathpatterns, "directory",
+        \                                    troy#path#home_base_regex())
+
+  "echo "File options: " . join(fileoptions, ',')
+
+  if len(fileoptions) > 0
+    return fnamemodify(fileoptions[0], ":p:h:h")
+  endif
+
+  return
+endfunction
 "------------------------------------------------------------------------
 " ## Internal functions {{{1
 

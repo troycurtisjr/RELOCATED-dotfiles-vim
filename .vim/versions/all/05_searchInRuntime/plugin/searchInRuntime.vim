@@ -445,16 +445,37 @@ endfunction
 " for {cmd} are "sp", "e", ...
 let s:k_pattern = '^-\([a-zA-Z0-9]\|-\w\+=\)'
 function! s:OpenWith(bang, cmd, path, ...)
-  let [file, line, col] = s:DoOpenWith(a:bang, a:cmd, a:path, a:000)
-  if strlen(file) == 0 && lh#list#match(a:000, s:k_pattern) != -1
-    let a000 = deepcopy(a:000)
-    call map(a000, 'substitute(v:val, s:k_pattern, "", "g")')
-    echomsg string(a000)
-    let [file, line] = s:DoOpenWith(a:bang, a:cmd, a:path, a000)
+  let patternlist = deepcopy(a:000)
+
+  if strlen(&includeexpr) > 0
+    for patt in a:000
+      let fname = deepcopy(patt)
+      let newexpr = substitute(&includeexpr, 'v:fname', 'fname', 'g')
+      let newpatt = eval(newexpr) 
+      call add(patternlist, newpatt)
+    endfo
+  endif
+
+  let origlist = deepcopy(patternlist)
+
+  let sufflist = split(&suffixesadd, ',')
+  for suff in sufflist 
+    for patt in origlist 
+      let newpatt = patt . suff
+      :call add(patternlist, newpatt)
+    endfo
+  endfor
+  "echomsg 'Looking for ' . string(patternlist)
+
+  let [file, line, col] = s:DoOpenWith(a:bang, a:cmd, a:path, patternlist)
+  if strlen(file) == 0 && lh#list#match(patternlist, s:k_pattern) != -1
+    call map(patternlist, 'substitute(v:val, s:k_pattern, "", "g")')
+    echomsg string(patternlist)
+    let [file, line] = s:DoOpenWith(a:bang, a:cmd, a:path, patternlist)
   endif
   if strlen(file) == 0 
     echohl WarningMsg
-    echomsg "No file found for ".string(a:000)." in ".a:path
+    echomsg "No file found for ".string(patternlist)." in ".a:path
     echohl None
     return
   endif
@@ -471,6 +492,7 @@ endfunction
 function! s:DoOpenWith(bang, cmd, path, a000)
   let ask_even_if_already_opened = a:bang == "!"
   let line = 0
+  let col  = 0
   let patterns = a:a000
   if len(patterns) == 1
     let [all, pattern, line, col ; tail] = matchlist(patterns[0], '^\(.\{-}\)\%(:\(\d\+\)\)\=\%(:\(\d\+\)\)\=$')
